@@ -4,8 +4,19 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 
-//default stuff should be selected
-
+//
+// Name: Vu, Anthony
+// Project: 2
+// Due: 3/7/2018
+// Course: CS-245-01-w18
+//
+// Description:
+// This class is responsible for generating the JDialog that
+// will allow the user to select Font, Style, and Size. The
+// is allowed to select any option from the list provided.
+// This will then trigger a listner to update the sample text
+// with the appropriate settings that the user selected.
+//
 
 public class JFontChooser {
 
