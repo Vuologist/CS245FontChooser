@@ -21,8 +21,9 @@ public class FontChooserDemo {
         if (jfontc.showDialog(jfrm)) { // user selected ok
             jfontc.getFont();
             jfontc.getColor();
-        }
 
+        }
+        System.exit(10);
         jfrm.setLocationRelativeTo(null);
         jfrm.setVisible(true);
     }
