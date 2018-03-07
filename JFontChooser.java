@@ -2,6 +2,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 public class JFontChooser {
@@ -12,13 +15,19 @@ public class JFontChooser {
     private Color defaultColor;
     private Font selectedFont;
     private Color selectedColor;
+    private JLabel jlSampleTxt;
+    private Font oldFont;
+    private Color oldColor;
+    private boolean flag = false;
 
     public void setDefault(Font font){
         defaultFont = font;
+        selectedFont = font;
     }
 
     public void setDefault(Color color){
         defaultColor = color;
+        selectedColor = color;
     }
 
     public Color getColor(){return selectedColor;}
@@ -28,21 +37,26 @@ public class JFontChooser {
     public boolean showDialog(JFrame parent){
         jfrm = parent;
         generateDialog();
+
+        oldFont = selectedFont;
+        oldColor = selectedColor;
+
+        System.out.println("Font: " + selectedFont.getFamily() + "\tStyle: " + selectedFont.getStyle() + "\tSize: " + selectedFont.getSize());
+        //set "default"
+        jlSampleTxt.setFont(new Font(selectedFont.getFamily(), selectedFont.getStyle(), selectedFont.getSize()));
+        jlSampleTxt.setForeground(selectedColor);
+
         jdlg.setLocationRelativeTo(parent);
         jdlg.setVisible(true);
-
-        return false;
+        return flag;
     }
 
     private void generateDialog(){
 
         jdlg = new JDialog(jfrm,"Font",true);
-        jdlg.setSize(500,500);
+        jdlg.setSize(550,500);
         jdlg.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
-       JLabel jlSampleTxt = new JLabel("AaBbYyZz");
-       jlSampleTxt.setHorizontalAlignment(SwingConstants.CENTER);
 
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         gbc.insets = new Insets(5,5,5,5);
@@ -64,25 +78,34 @@ public class JFontChooser {
         jdlg.add(generateFontSizePane(), gbc);
 
         //sample text area
-        Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
-        Border margin = new EmptyBorder(40,80,40, 80);
-        jlSampleTxt.setBorder(new CompoundBorder(border,margin));
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        jdlg.add(jlSampleTxt,gbc);
+        jdlg.add(generateSampleTextArea(),gbc);
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
 
         //button: ok cancel color chooser
         gbc.gridx = 2;
         gbc.gridy = 1;
-        jdlg.add(buttonCreation(),gbc);
-        jdlg.pack();
+        jdlg.add(generateButton(),gbc);
+        //jdlg.pack();
     }
 
-    private JPanel buttonCreation(){
+    private JPanel generateSampleTextArea(){
+        jlSampleTxt = new JLabel("AaBbYyZz");
+        jlSampleTxt.setHorizontalAlignment(SwingConstants.CENTER);
+        jlSampleTxt.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.GRAY, 1),new EmptyBorder(40,80,40, 80)));
+
+        JPanel jpln = new JPanel();
+        jpln.setLayout(new BorderLayout());
+        jpln.setMaximumSize(new Dimension(200, 200));
+        jpln.add(jlSampleTxt, BorderLayout.NORTH);
+        return jpln;
+    }
+
+    private JPanel generateButton(){
         JButton jbOkay = new JButton("OK");
         JButton jbCancel = new JButton("Cancel");
         JButton jbColorChooser = new JButton("Color Chooser");
@@ -111,6 +134,27 @@ public class JFontChooser {
         gbcs.gridx = 0;
         gbcs.gridy = 0;
 
+        jbColorChooser.addActionListener(ae -> {
+            Color c = JColorChooser.showDialog(jbColorChooser, "Select a color", selectedColor);
+            if(c != null){
+                selectedColor = c;
+                jlSampleTxt.setForeground(selectedColor);
+                System.out.println(c.toString());
+            }
+        });
+
+        jbOkay.addActionListener(ae -> {
+            flag = true;
+            jdlg.dispose();
+        });
+
+        jbCancel.addActionListener(ae -> {
+            selectedColor = oldColor;
+            selectedFont = oldFont;
+            flag = false;
+            jdlg.dispose();
+        });
+
         return butt;
     }
 
@@ -126,18 +170,26 @@ public class JFontChooser {
 
         JLabel jlFont = new JLabel("Font:");
         JTextField jtFont = new JTextField(10);
-
+        jtFont.setEnabled(false);
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
         jpln.add(jlFont, BorderLayout.NORTH);
         jpln.add(jtFont, BorderLayout.CENTER);
         jpln.add(jscrlp, BorderLayout.SOUTH);
 
+        jlst.addListSelectionListener((ListSelectionEvent le) ->{
+            String font = jlst.getSelectedValue().toString();
+            jtFont.setText(font);
+            selectedFont = new Font(font, selectedFont.getStyle(), selectedFont.getSize());
+            jlSampleTxt.setFont(selectedFont);
+            System.out.println(font);
+        });
+
         return jpln;
     }
 
     private JPanel generateFontStylePane(){
-        String fontsStyles[] = {"Plain", "Italic", "Bold", "Bold Italic"};
+        String fontsStyles[] = {"Plain", "Bold", "Italic", "Bold Italic"};
         DefaultListModel lm = new DefaultListModel();
 
         for(int i = 0; i < fontsStyles.length; i++)
@@ -148,14 +200,38 @@ public class JFontChooser {
 
         JLabel jlStyle = new JLabel("Style:");
         JTextField jtStyle = new JTextField(10);
-
+        jtStyle.setEnabled(false);
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
         jpln.add(jlStyle, BorderLayout.NORTH);
         jpln.add(jtStyle, BorderLayout.CENTER);
         jpln.add(jscrlp, BorderLayout.SOUTH);
 
+        jlst.addListSelectionListener((ListSelectionEvent le) ->{
+            String style = jlst.getSelectedValue().toString();
+            jtStyle.setText(style);
+            setNewStyle(style);
+        });
+
         return jpln;
+    }
+
+    private void setNewStyle(String style) {
+        int holder;
+
+        //"Plain", "Bold", "Italic", "Bold Italic"
+        if (style.equals("Plain")) {
+            holder = 0;
+        } else if(style.equals("Bold")){
+            holder = 1;
+        }else if (style.equals("Italic")){
+            holder = 2;
+        } else
+            holder = 3;
+
+        selectedFont = new Font(selectedFont.getFamily(), holder, selectedFont.getSize());
+        jlSampleTxt.setFont(selectedFont);
+        System.out.println(style);
     }
 
 
@@ -171,11 +247,20 @@ public class JFontChooser {
 
         JLabel jlSize = new JLabel("Size:");
         JTextField jtSize = new JTextField(10);
+        jtSize.setEditable(false);
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
         jpln.add(jlSize, BorderLayout.NORTH);
         jpln.add(jtSize, BorderLayout.CENTER);
         jpln.add(jscrlp, BorderLayout.SOUTH);
+
+        jlst.addListSelectionListener((ListSelectionEvent le) ->{
+            int size = Integer.valueOf(jlst.getSelectedValue().toString());
+            jtSize.setText(jlst.getSelectedValue().toString());
+            selectedFont = new Font(selectedFont.getFamily(), selectedFont.getStyle(), size);
+            jlSampleTxt.setFont(selectedFont);
+        });
+
         return jpln;
     }
 

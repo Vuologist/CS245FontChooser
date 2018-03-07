@@ -7,21 +7,24 @@ public class FontChooserDemo {
 
     public FontChooserDemo(){
 
-        jfrm = new JFrame ("Untitled-Notepad");
+        jfrm = new JFrame ("FontChooserDemo");
         jfrm.setSize(650,325);
         jfrm.setLayout(new BorderLayout());
         jfrm.setDefaultCloseOperation(jfrm.EXIT_ON_CLOSE);
 
-        Color color = new Color(200, 120, 32, 10);
-        Font font = new Font(Font.SERIF,Font.BOLD,12);
+        Color color = new Color(0, 0, 0);
+        Font font = new Font("Arial",Font.PLAIN,25);
 
         JFontChooser jfontc = new JFontChooser();
         jfontc.setDefault(font);
         jfontc.setDefault(color);
         if (jfontc.showDialog(jfrm)) { // user selected ok
-            jfontc.getFont();
-            jfontc.getColor();
+            System.out.println(jfontc.getFont());
+            System.out.println(jfontc.getColor());
 
+        } else{
+            System.out.println(jfontc.getFont());
+            System.out.println(jfontc.getColor());
         }
         System.exit(10);
         jfrm.setLocationRelativeTo(null);
@@ -33,5 +36,4 @@ public class FontChooserDemo {
             new FontChooserDemo();
         });
     }
-
 }
