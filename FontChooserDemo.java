@@ -13,7 +13,7 @@ public class FontChooserDemo {
         jfrm.setDefaultCloseOperation(jfrm.EXIT_ON_CLOSE);
 
         Color color = new Color(0, 0, 0);
-        Font font = new Font("Arial",Font.PLAIN,25);
+        Font font = new Font("Forte",Font.PLAIN,12);
 
         JFontChooser jfontc = new JFontChooser();
         jfontc.setDefault(font);

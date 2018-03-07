@@ -20,6 +20,11 @@ public class JFontChooser {
     private Color oldColor;
     private boolean flag = false;
 
+    public JFontChooser(){
+        defaultColor = new Color(0, 0, 0);
+        defaultFont = new Font("Forte",Font.PLAIN,12);
+    }
+
     public void setDefault(Font font){
         defaultFont = font;
         selectedFont = font;
@@ -41,7 +46,7 @@ public class JFontChooser {
         oldFont = selectedFont;
         oldColor = selectedColor;
 
-        System.out.println("Font: " + selectedFont.getFamily() + "\tStyle: " + selectedFont.getStyle() + "\tSize: " + selectedFont.getSize());
+        //System.out.println("Font: " + selectedFont.getFamily() + "\tStyle: " + selectedFont.getStyle() + "\tSize: " + selectedFont.getSize());
         //set "default"
         jlSampleTxt.setFont(new Font(selectedFont.getFamily(), selectedFont.getStyle(), selectedFont.getSize()));
         jlSampleTxt.setForeground(selectedColor);
@@ -100,7 +105,8 @@ public class JFontChooser {
 
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
-        jpln.setPreferredSize(new Dimension(200,200));
+        jpln.setMinimumSize(new Dimension(300,200));
+        jpln.setPreferredSize(new Dimension(300,200));
         jpln.setMaximumSize(new Dimension(300, 200));
         jpln.add(jlSampleTxt, BorderLayout.NORTH);
         return jpln;
@@ -140,7 +146,7 @@ public class JFontChooser {
             if(c != null){
                 selectedColor = c;
                 jlSampleTxt.setForeground(selectedColor);
-                System.out.println(c.toString());
+                //System.out.println(c.toString());
             }
         });
 
@@ -170,20 +176,24 @@ public class JFontChooser {
         JScrollPane jscrlp = new JScrollPane(jlst);
 
         JLabel jlFont = new JLabel("Font:");
-        JTextField jtFont = new JTextField(10);
-        jtFont.setEnabled(false);
+        //JTextField jtFont = new JTextField(10);
+
+        jlst.setSelectedValue(selectedFont.getFamily(), true);
+        //jtFont.setText(selectedFont.getFamily());
+
+        //jtFont.setEnabled(false);
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
         jpln.add(jlFont, BorderLayout.NORTH);
-        jpln.add(jtFont, BorderLayout.CENTER);
+        //jpln.add(jtFont, BorderLayout.CENTER);
         jpln.add(jscrlp, BorderLayout.SOUTH);
 
         jlst.addListSelectionListener((ListSelectionEvent le) ->{
             String font = jlst.getSelectedValue().toString();
-            jtFont.setText(font);
+            //jtFont.setText(font);
             selectedFont = new Font(font, selectedFont.getStyle(), selectedFont.getSize());
             jlSampleTxt.setFont(selectedFont);
-            System.out.println(font);
+            //System.out.println(font);
         });
 
         return jpln;
@@ -200,17 +210,22 @@ public class JFontChooser {
         JScrollPane jscrlp = new JScrollPane(jlst);
 
         JLabel jlStyle = new JLabel("Style:");
-        JTextField jtStyle = new JTextField(10);
-        jtStyle.setEnabled(false);
+        //JTextField jtStyle = new JTextField(10);
+
+
+        jlst.setSelectedValue(fontsStyles[selectedFont.getStyle()], true);
+        //jtStyle.setText(fontsStyles[selectedFont.getStyle()]);
+
+        //jtStyle.setEnabled(false);
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
         jpln.add(jlStyle, BorderLayout.NORTH);
-        jpln.add(jtStyle, BorderLayout.CENTER);
+        //jpln.add(jtStyle, BorderLayout.CENTER);
         jpln.add(jscrlp, BorderLayout.SOUTH);
 
         jlst.addListSelectionListener((ListSelectionEvent le) ->{
             String style = jlst.getSelectedValue().toString();
-            jtStyle.setText(style);
+            //jtStyle.setText(style);
             setNewStyle(style);
         });
 
@@ -232,7 +247,7 @@ public class JFontChooser {
 
         selectedFont = new Font(selectedFont.getFamily(), holder, selectedFont.getSize());
         jlSampleTxt.setFont(selectedFont);
-        System.out.println(style);
+        //System.out.println(style);
     }
 
 
@@ -246,24 +261,29 @@ public class JFontChooser {
         JList jlst = new JList(lm);
         JScrollPane jscrlp = new JScrollPane(jlst);
 
-        JLabel jlSize = new JLabel("Size (Editable):");
-        JTextField jtSize = new JTextField(10);
-        jtSize.setEditable(false);
+        JLabel jlSize = new JLabel("Size:");
+        //JTextField jtSize = new JTextField(10);
+
+        jlst.setSelectedValue(String.valueOf(selectedFont.getSize()), true);
+        //jtSize.setText(String.valueOf(selectedFont.getSize()));
+
+        //jtSize.setEditable(false);
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
         jpln.add(jlSize, BorderLayout.NORTH);
-        jpln.add(jtSize, BorderLayout.CENTER);
+        //jpln.add(jtSize, BorderLayout.CENTER);
         jpln.add(jscrlp, BorderLayout.SOUTH);
 
+        /*
         jtSize.addActionListener(ae -> {
             int size = Integer.valueOf(ae.getActionCommand());
             selectedFont = new Font(selectedFont.getFamily(), selectedFont.getStyle(), size);
             jlSampleTxt.setFont(selectedFont);
-        });
+        }); */
 
         jlst.addListSelectionListener((ListSelectionEvent le) ->{
             int size = Integer.valueOf(jlst.getSelectedValue().toString());
-            jtSize.setText(jlst.getSelectedValue().toString());
+            //jtSize.setText(jlst.getSelectedValue().toString());
             selectedFont = new Font(selectedFont.getFamily(), selectedFont.getStyle(), size);
             jlSampleTxt.setFont(selectedFont);
         });
