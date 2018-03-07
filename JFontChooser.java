@@ -1,11 +1,11 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+
+//default stuff should be selected
+
 
 public class JFontChooser {
 
@@ -90,7 +90,7 @@ public class JFontChooser {
         gbc.gridx = 2;
         gbc.gridy = 1;
         jdlg.add(generateButton(),gbc);
-        //jdlg.pack();
+        jdlg.pack();
     }
 
     private JPanel generateSampleTextArea(){
@@ -100,7 +100,8 @@ public class JFontChooser {
 
         JPanel jpln = new JPanel();
         jpln.setLayout(new BorderLayout());
-        jpln.setMaximumSize(new Dimension(200, 200));
+        jpln.setPreferredSize(new Dimension(200,200));
+        jpln.setMaximumSize(new Dimension(300, 200));
         jpln.add(jlSampleTxt, BorderLayout.NORTH);
         return jpln;
     }
@@ -245,7 +246,7 @@ public class JFontChooser {
         JList jlst = new JList(lm);
         JScrollPane jscrlp = new JScrollPane(jlst);
 
-        JLabel jlSize = new JLabel("Size:");
+        JLabel jlSize = new JLabel("Size (Editable):");
         JTextField jtSize = new JTextField(10);
         jtSize.setEditable(false);
         JPanel jpln = new JPanel();
@@ -253,6 +254,12 @@ public class JFontChooser {
         jpln.add(jlSize, BorderLayout.NORTH);
         jpln.add(jtSize, BorderLayout.CENTER);
         jpln.add(jscrlp, BorderLayout.SOUTH);
+
+        jtSize.addActionListener(ae -> {
+            int size = Integer.valueOf(ae.getActionCommand());
+            selectedFont = new Font(selectedFont.getFamily(), selectedFont.getStyle(), size);
+            jlSampleTxt.setFont(selectedFont);
+        });
 
         jlst.addListSelectionListener((ListSelectionEvent le) ->{
             int size = Integer.valueOf(jlst.getSelectedValue().toString());
